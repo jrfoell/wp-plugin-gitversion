@@ -1,15 +1,36 @@
 <?php
 /*
-Plugin Name: Git Test
-Description: This describes my plugin in a short sentence
-Version:     1.0
+Plugin Name: Git Version
+Description: Override a plugin version with a more accurate git version using `git describe`
+Version:     1.1
 */
 
-define( 'PLUGIN_DIR', dirname( __FILE__ ) );
+define( 'PLUGIN_PATH', dirname( __FILE__ ) );
+define( 'PLUGIN_DIR', basename( PLUGIN_PATH ) );
+define( 'PLUGIN_FILE', basename( __FILE__) );
 
-function get_git_version() {
-	return exec('cd '. PLUGIN_DIR.'; git describe');
+/**
+ * `git describe` assumes you have tagged your project with a "annotated tag" which means a tag with a comment such as:
+ *
+ * `git tag -a 1.1 -m "version 1.1"`
+ *
+ * Once an annotated tag is added, `git describe` will give you the tag name with some extra info such as:
+ *
+ * 1.1-3-g7142af9
+ *
+ * It shows the tag name (1.1)
+ * Followed by how many commits since that tag (3)
+ * Followed by the current commit hash (g7142af9)
+ */
+
+function git_describe() {
+	return exec('cd '. PLUGIN_PATH.'; git describe');
 }
 
-// Comment 3
-//echo "current version is: " . get_git_version() . PHP_EOL;
+function git_version( $all_plugins ) {
+	if ( isset( $all_plugins[ PLUGIN_DIR . '/'. PLUGIN_FILE ] ) ) {
+		$all_plugins[ PLUGIN_DIR . '/'. PLUGIN_FILE ]['Version'] = git_describe();
+	}
+	return $all_plugins;
+}
+add_filter( 'all_plugins', 'git_version' );

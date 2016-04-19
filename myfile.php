@@ -1,5 +1,6 @@
 <?php
 
-define( 'VERSION', '$Id:$' );
+define( 'VERSION', '$Id$' );
 
+// Comment
 echo "current version is: " . VERSION;

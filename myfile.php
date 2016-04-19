@@ -2,5 +2,5 @@
 
 define( 'VERSION', '$Id$' );
 
-// Comment 2
+// Comment 3
 echo "current version is: " . VERSION;
